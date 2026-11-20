@@ -5,3 +5,29 @@
 
 :root{--bg:#121e1b;--panel:#1b2b25;--inner:#23382e;--line:#41594e;--gold:#d2ba85;--text:#e7e9e1;--muted:#b9ccbf;--green:#86cfa9;--danger:#e58d8d}
 .brand{display:inline-block;line-height:0;letter-spacing:0}.brand img{width:190px;max-width:42vw;display:block}.head{padding-block:12px}.head p{font-size:12px;margin-top:6px}.side{top:var(--sticky-top,116px);max-height:calc(100dvh - var(--sticky-top,116px) - 14px)}.mainColumn,.view{min-width:0}.gameChatArea{margin:0}.gameChatPanel .chatLog{height:245px}.chatFilters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}.chatFilters button{padding:6px 3px}.chatLine.system{background:#202f36;border-radius:6px;padding:7px 8px}.chatLine.system .who{color:#8db3d6}.chatLine.system .body{color:#a5c5e0}.chatLine.system.result .body{color:#d2ba85}.chatLine.system.warning .body{color:#e8bf79}.chatLine.system.error .body{color:#e58d8d}.chatLine .stamp{color:#a0ada5}.chatNotice{font-size:11px}.lobbyRules{padding:10px 4px}.lobbyRules p,details p{margin-top:10px;line-height:1.7}.ruleWarning{color:var(--danger);min-height:1.5em;margin:8px 0}#chooseBlack::before,#chooseWhite::before{content:'';display:inline-block;vertical-align:middle;width:13px;height:13px;border-radius:50%;margin-right:7px;background:#181818;border:1px solid #999}#chooseWhite::before{background:#f6f3e9}.mainColumn .primary{display:grid}.side .chatLog{height:clamp(100px,calc(100dvh - var(--sticky-top,116px) - 330px),430px)}@media(max-width:850px){.side{position:static;max-height:none}.side .chatLog{height:230px}.gameChatPanel .chatLog{height:200px}.brand img{width:145px}.head p{font-size:11px}.chatFilters button{font-size:12px}}@media(min-width:851px){.side{position:sticky;overflow:auto;overscroll-behavior:contain;align-self:start}.side .chatLog{min-height:90px}.layout{grid-template-columns:minmax(0,1fr) minmax(290px,345px)}}
+
+/* WolLu V1.4.1: fixed-width sidebar; vertical resizing only. */
+#commonSide{display:flex;flex-direction:column;gap:0;min-height:0;height:calc(100dvh - var(--sticky-top,116px) - 14px);max-height:none;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:thin;align-self:start;position:sticky;top:var(--sticky-top,116px)}
+#commonSide:not(.in-room) #gameSide,#commonSide:not(.in-room) #splitChat{display:none!important}
+#commonSide .panel{display:flex;flex-direction:column;min-height:0;flex:0 0 auto;padding:10px 12px;overflow:hidden;gap:6px; border-radius:12px}
+#commonSide .sideHead{flex-wrap:nowrap;flex-shrink:0;gap:5px;min-height:26px}
+#commonSide .sideHead h2{margin:0;font-size:15px;overflow-wrap:anywhere}
+#commonSide .sideHead button{flex:none}
+#commonSide #people{min-height:0;max-height:none;flex:1 1 0;overflow:auto;overscroll-behavior:contain}
+#commonSide .chatBody{flex:1 1 0;min-height:0;gap:5px;overflow:hidden}
+#commonSide .chatLog{flex:1 1 0;height:0;min-height:0;max-height:none;overflow-y:auto;overscroll-behavior:contain;padding:2px 3px}
+#commonSide .chatForm,#commonSide .chatFilters,#commonSide .chatNotice,#commonSide .chatBody>button{flex:none}
+#commonSide .chatForm input,#commonSide .chatForm button{padding:7px 9px;font-size:13px}
+#commonSide .chatFilters button{padding:4px 3px;min-height:26px}
+#commonSide .chatNotice{font-size:10px;line-height:1.3;margin:0}
+#commonSide .sideTools{display:flex;align-items:center;justify-content:space-between;gap:4px;flex:0 0 32px;font-size:11px;color:var(--muted)}
+#commonSide .sideTools button{padding:3px 7px;white-space:nowrap}
+#commonSide .sideSplitter{height:14px;flex:0 0 14px;display:flex;align-items:center;justify-content:center;cursor:row-resize;touch-action:none;user-select:none;border-radius:5px;outline-offset:-2px}
+#commonSide .sideSplitter span{width:44px;height:3px;background:var(--gold);border-radius:99px;opacity:.7;pointer-events:none}
+#commonSide .sideSplitter:hover,#commonSide .sideSplitter.dragging,#commonSide .sideSplitter:focus-visible{background:#30483d;outline:1px solid var(--gold)}
+#commonSide .sideSplitter[aria-disabled=true]{cursor:default;opacity:.4}
+#commonSide .gameChatPanel{border-color:#668e79}
+#commonSide .gameChatPanel h2{color:var(--gold)}
+html.sidebar-dragging,html.sidebar-dragging *{cursor:row-resize!important;user-select:none!important}
+@media(max-width:850px){#commonSide{position:static;top:auto;height:max(640px,calc(100dvh - 100px));max-height:none;width:100%}#commonSide .sideSplitter{height:24px;flex-basis:24px}}
+@media(min-width:851px) and (max-height:470px){#commonSide{position:static;height:440px}}
