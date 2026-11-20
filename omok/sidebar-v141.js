@@ -1,4 +1,4 @@
-/* WolLu 1.4.1 — only local UI state; no Firebase or gameplay changes. */
+/* WolLu 1.4.2 — only local UI state; no Firebase or gameplay changes. */
 (()=>{
  'use strict';
  const byId=id=>document.getElementById(id), side=byId('commonSide');
@@ -16,7 +16,7 @@
  const size=el=>el.getBoundingClientRect().height;
  const collapsed=i=>bodies[i].hidden;
  // Preserve a usable header and input at the smallest size, with independent message scrolling.
- function minimum(i){if(collapsed(i))return Math.ceil(size(panels[i].querySelector('.sideHead')))+22; if(i===0)return 84;const body=bodies[i], log=body.querySelector('.chatLog');const other=[...body.children].filter(e=>e!==log&&!e.hidden);const gap=parseFloat(getComputedStyle(body).gap)||0;return Math.ceil(size(panels[i].querySelector('.sideHead'))+22+6+other.reduce((a,e)=>a+size(e),0)+gap*other.length+32);}
+ function minimum(i){const p=panels[i],ps=getComputedStyle(p),body=bodies[i],density=Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--ui-scale'))||1;const px=(style,key)=>parseFloat(style[key])||0;const edges=px(ps,'paddingTop')+px(ps,'paddingBottom')+px(ps,'borderTopWidth')+px(ps,'borderBottomWidth');const head=size(p.querySelector('.sideHead'));if(collapsed(i))return Math.ceil(head+edges);if(i===0)return Math.ceil(Math.max(84*density,head+edges+px(ps,'gap')+24*density));const log=body.querySelector('.chatLog');const other=[...body.children].filter(e=>e!==log&&!e.hidden);const gap=px(getComputedStyle(body),'gap');return Math.ceil(head+edges+px(ps,'gap')+other.reduce((a,e)=>a+size(e),0)+gap*other.length+32*density); }
  function allocate(total, mins, ws, expanded){const out=[...mins];let remainder=Math.max(0,total-mins.reduce((a,b)=>a+b,0));let active=[...expanded];if(!active.length)return out;let pool=remainder+active.reduce((a,i)=>a+mins[i],0);while(active.length){const sum=active.reduce((a,i)=>a+ws[i],0);const clamped=active.filter(i=>pool*ws[i]/sum<mins[i]);if(!clamped.length){active.forEach(i=>out[i]=pool*ws[i]/sum);break;}clamped.forEach(i=>{out[i]=mins[i];pool-=mins[i];});active=active.filter(i=>!clamped.includes(i));}return out;}
  function render(){frame=0;const room=isRoom(),k=room?'room':'lobby',n=room?3:2;side.classList.toggle('in-room',room);const mins=Array.from({length:n},(_,i)=>minimum(i)), expanded=Array.from({length:n},(_,i)=>i).filter(i=>!collapsed(i));const available=Math.max(0,side.clientHeight-size(tools)-handles.slice(0,n-1).reduce((a,e)=>a+size(e),0));const total=Math.max(available,mins.reduce((a,b)=>a+b,0));const heights=allocate(total,mins,weights[k],expanded);
  panels.slice(0,n).forEach((p,i)=>{p.style.height=heights[i]+'px';p.style.flexBasis=heights[i]+'px';});
