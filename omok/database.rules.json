@@ -2,21 +2,83 @@
   "rules": {
     ".read": false,
     ".write": false,
-    "rooms": {
+    "omokPresence": {
+      ".read": "auth != null",
+      "$uid": {
+        "$session": {
+          ".write": "auth != null && auth.uid === $uid",
+          ".validate": "newData.hasChildren(['name','state','room','updatedAt'])",
+          "name": {
+            ".validate": "newData.isString() && newData.val().length <= 20"
+          },
+          "state": {
+            ".validate": "newData.val() === 'lobby' || newData.val() === 'local' || newData.val() === 'room'"
+          },
+          "room": {
+            ".validate": "newData.isString() && (newData.val() === '' || newData.val().matches(/^[A-Z2-9]{8}$/))"
+          },
+          "updatedAt": {
+            ".validate": "newData.isNumber()"
+          },
+          "$other": {
+            ".validate": false
+          }
+        }
+      }
+    },
+    "omokRoomsV12": {
       "$code": {
         ".read": "auth != null",
-        ".write": "auth != null && $code.matches(/^[A-Z2-9]{8}$/) && newData.exists() && ((!data.exists() && newData.child('black').val() === auth.uid && !newData.child('white').exists()) || (data.exists() && newData.child('black').val() === data.child('black').val() && newData.child('blackName').val() === data.child('blackName').val() && ((!data.child('white').exists() && newData.child('white').val() === auth.uid && auth.uid !== data.child('black').val() && newData.child('round').val() === data.child('round').val() && !newData.child('moves').exists() && !newData.child('votes').exists()) || ((auth.uid === data.child('black').val() || auth.uid === data.child('white').val()) && newData.child('white').val() === data.child('white').val() && newData.child('whiteName').val() === data.child('whiteName').val()))))",
-        ".validate": "newData.hasChildren(['black','blackName','round','createdAt']) && (!newData.child('white').exists() || (newData.child('white').val() !== newData.child('black').val() && newData.child('whiteName').exists()))",
-        "black": {".validate": "newData.isString()"},
-        "white": {".validate": "newData.isString()"},
-        "blackName": {".validate": "newData.isString() && newData.val().length <= 20"},
-        "whiteName": {".validate": "newData.isString() && newData.val().length <= 20"},
-        "round": {".validate": "newData.isNumber() && newData.val() >= 0"},
-        "createdAt": {".validate": "newData.isNumber()"},
-        "moves": {"$i": {".validate": "$i.matches(/^[0-9]{1,3}$/) && newData.isNumber() && newData.val() >= 0 && newData.val() < 225"}},
-        "votes": {"$uid": {".validate": "newData.val() === true && ($uid === newData.parent().parent().child('black').val() || $uid === newData.parent().parent().child('white').val())"}},
-        "$other": {".validate": false}
-      }
+        ".write": "(auth != null && ((!newData.exists() && data.exists() && (auth.uid === data.child('black').val() || auth.uid === data.child('white').val())) || ($code.matches(/^[A-Z2-9]{8}$/) && newData.exists() && ((!data.exists() && newData.child('black').val() === auth.uid && !newData.child('white').exists() && !newData.child('whiteName').exists() && newData.child('round').val() === 0 && (newData.child('hostColor').val() === 0 && newData.child('guestColor').val() === 0 && newData.child('hostReady').val() === false && newData.child('guestReady').val() === false && !newData.child('moves').exists() && !newData.child('votes').exists())) || (data.exists() && data.child('black').val() === newData.child('black').val() && data.child('blackName').val() === newData.child('blackName').val() && data.child('title').val() === newData.child('title').val() && data.child('createdAt').val() === newData.child('createdAt').val() && ((!data.child('white').exists() && newData.child('white').val() === auth.uid && auth.uid !== data.child('black').val() && data.child('round').val() === newData.child('round').val() && data.child('hostColor').val() === newData.child('hostColor').val() && data.child('guestColor').val() === newData.child('guestColor').val() && data.child('hostReady').val() === newData.child('hostReady').val() && data.child('guestReady').val() === newData.child('guestReady').val() && !newData.child('moves').exists() && !newData.child('votes').exists()) || ((auth.uid === data.child('black').val() || auth.uid === data.child('white').val()) && data.child('white').val() === newData.child('white').val() && data.child('whiteName').val() === newData.child('whiteName').val() && ((!(data.child('hostReady').val() === true && data.child('guestReady').val() === true) && data.child('round').val() === newData.child('round').val() && !newData.child('moves').exists() && !newData.child('votes').exists() && ((auth.uid === data.child('black').val() && data.child('guestColor').val() === newData.child('guestColor').val() && data.child('guestReady').val() === newData.child('guestReady').val() && (data.child('hostReady').val() === false || data.child('hostColor').val() === newData.child('hostColor').val())) || (auth.uid === data.child('white').val() && data.child('hostColor').val() === newData.child('hostColor').val() && data.child('hostReady').val() === newData.child('hostReady').val() && (data.child('guestReady').val() === false || data.child('guestColor').val() === newData.child('guestColor').val())))) || ((data.child('hostReady').val() === true && data.child('guestReady').val() === true) && data.child('round').val() === newData.child('round').val() && data.child('hostColor').val() === newData.child('hostColor').val() && data.child('guestColor').val() === newData.child('guestColor').val() && data.child('hostReady').val() === newData.child('hostReady').val() && data.child('guestReady').val() === newData.child('guestReady').val() && ((newData.child('votes').child(data.child('black').val()).val() === data.child('votes').child(data.child('black').val()).val() && newData.child('votes').child(data.child('white').val()).val() === data.child('votes').child(data.child('white').val()).val()) || (auth.uid === data.child('black').val() && data.child('votes').child(data.child('white').val()).val() !== true && newData.child('votes').child(data.child('white').val()).val() === data.child('votes').child(data.child('white').val()).val() && newData.child('votes').child(auth.uid).val() === true) || (auth.uid === data.child('white').val() && data.child('votes').child(data.child('black').val()).val() !== true && newData.child('votes').child(data.child('black').val()).val() === data.child('votes').child(data.child('black').val()).val() && newData.child('votes').child(auth.uid).val() === true))) || ((data.child('hostReady').val() === true && data.child('guestReady').val() === true) && newData.child('round').val() === data.child('round').val() + 1 && (newData.child('hostColor').val() === 0 && newData.child('guestColor').val() === 0 && newData.child('hostReady').val() === false && newData.child('guestReady').val() === false && !newData.child('moves').exists() && !newData.child('votes').exists()) && ((auth.uid === data.child('black').val() && data.child('votes').child(data.child('white').val()).val() === true) || (auth.uid === data.child('white').val() && data.child('votes').child(data.child('black').val()).val() === true)))))))))))",
+        ".validate": "(newData.hasChildren(['black','blackName','title','round','createdAt','hostColor','guestColor','hostReady','guestReady']) && ((!newData.child('white').exists() && !newData.child('whiteName').exists() && newData.child('guestColor').val() === 0 && newData.child('guestReady').val() === false && newData.child('hostReady').val() === false) || (newData.child('white').exists() && newData.child('whiteName').exists() && newData.child('white').val() !== newData.child('black').val())) && (newData.child('hostColor').val() === 0 || newData.child('guestColor').val() === 0 || newData.child('hostColor').val() !== newData.child('guestColor').val()) && (newData.child('hostReady').val() === false || newData.child('hostColor').val() !== 0) && (newData.child('guestReady').val() === false || newData.child('guestColor').val() !== 0) && ((newData.child('hostReady').val() === true && newData.child('guestReady').val() === true) || (!newData.child('moves').exists() && !newData.child('votes').exists())))",
+        "black": {
+          ".validate": "newData.isString()"
+        },
+        "white": {
+          ".validate": "newData.isString()"
+        },
+        "blackName": {
+          ".validate": "newData.isString() && newData.val().length <= 20"
+        },
+        "whiteName": {
+          ".validate": "newData.isString() && newData.val().length <= 20"
+        },
+        "round": {
+          ".validate": "newData.isNumber() && newData.val() >= 0"
+        },
+        "createdAt": {
+          ".validate": "newData.isNumber()"
+        },
+        "moves": {
+          "$i": {
+            ".validate": "$i.matches(/^[0-9]{1,3}$/) && newData.isNumber() && newData.val() >= 0 && newData.val() < 225"
+          }
+        },
+        "votes": {
+          "$uid": {
+            ".validate": "newData.val() === true && ($uid === newData.parent().parent().child('black').val() || $uid === newData.parent().parent().child('white').val())"
+          }
+        },
+        "$other": {
+          ".validate": false
+        },
+        "title": {
+          ".validate": "newData.isString() && newData.val().length <= 40"
+        },
+        "hostColor": {
+          ".validate": "newData.isNumber() && (newData.val() === 0 || newData.val() === 1 || newData.val() === 2)"
+        },
+        "guestColor": {
+          ".validate": "newData.isNumber() && (newData.val() === 0 || newData.val() === 1 || newData.val() === 2)"
+        },
+        "hostReady": {
+          ".validate": "newData.isBoolean()"
+        },
+        "guestReady": {
+          ".validate": "newData.isBoolean()"
+        }
+      },
+      ".read": "auth != null"
     }
   }
 }
