@@ -1,0 +1,22 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "rooms": {
+      "$code": {
+        ".read": "auth != null",
+        ".write": "auth != null && $code.matches(/^[A-Z2-9]{8}$/) && newData.exists() && ((!data.exists() && newData.child('black').val() === auth.uid && !newData.child('white').exists()) || (data.exists() && newData.child('black').val() === data.child('black').val() && newData.child('blackName').val() === data.child('blackName').val() && ((!data.child('white').exists() && newData.child('white').val() === auth.uid && auth.uid !== data.child('black').val() && newData.child('round').val() === data.child('round').val() && !newData.child('moves').exists() && !newData.child('votes').exists()) || ((auth.uid === data.child('black').val() || auth.uid === data.child('white').val()) && newData.child('white').val() === data.child('white').val() && newData.child('whiteName').val() === data.child('whiteName').val()))))",
+        ".validate": "newData.hasChildren(['black','blackName','round','createdAt']) && (!newData.child('white').exists() || (newData.child('white').val() !== newData.child('black').val() && newData.child('whiteName').exists()))",
+        "black": {".validate": "newData.isString()"},
+        "white": {".validate": "newData.isString()"},
+        "blackName": {".validate": "newData.isString() && newData.val().length <= 20"},
+        "whiteName": {".validate": "newData.isString() && newData.val().length <= 20"},
+        "round": {".validate": "newData.isNumber() && newData.val() >= 0"},
+        "createdAt": {".validate": "newData.isNumber()"},
+        "moves": {"$i": {".validate": "$i.matches(/^[0-9]{1,3}$/) && newData.isNumber() && newData.val() >= 0 && newData.val() < 225"}},
+        "votes": {"$uid": {".validate": "newData.val() === true && ($uid === newData.parent().parent().child('black').val() || $uid === newData.parent().parent().child('white').val())"}},
+        "$other": {".validate": false}
+      }
+    }
+  }
+}
