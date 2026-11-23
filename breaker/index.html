@@ -747,6 +747,18 @@ footer .tools #ranking {
   outline-offset: 2px;
 }
 .player-nickname-panel .nickname-help { margin: 7px 0 0; }
+
+/* 게임 화면 최상단의 닉네임: 오목 대기실처럼 언제든 수정 가능 */
+.player-nickname-panel {
+  margin-bottom: 12px;
+  padding: 12px 14px;
+}
+.player-nickname-panel input {
+  max-width: 100%;
+}
+.player-nickname-panel .nickname-help {
+  margin-top: 6px;
+}
 </style>
  </head>
  <body>
@@ -774,6 +786,11 @@ footer .tools #ranking {
      </button>
     </div>
    </header>
+     <section class="panel player-nickname-panel" aria-label="플레이어 닉네임">
+  <label for="onlineName">내 닉네임</label>
+  <input id="onlineName" type="text" maxlength="16" autocomplete="nickname" placeholder="익명 플레이어" />
+  <p class="note nickname-help" id="nicknameStatus" aria-live="polite">온라인 랭킹에 표시되는 이름 · 변경 시 자동 저장</p>
+</section>
    <div class="stats">
     <div class="stat">
      <small>
@@ -861,11 +878,6 @@ footer .tools #ranking {
       <div class="recent" id="recent">
       </div>
      </section>
-     <section class="panel player-nickname-panel" aria-label="플레이어 닉네임">
-  <label for="onlineName">내 닉네임</label>
-  <input id="onlineName" type="text" maxlength="16" autocomplete="nickname" placeholder="익명 플레이어" />
-  <p class="note nickname-help" id="nicknameStatus" aria-live="polite">온라인 랭킹에 표시되는 이름 · 변경 시 자동 저장</p>
-</section>
 <section class="panel">
       <div class="row">
        <h2>
