@@ -710,13 +710,29 @@ footer .tools #ranking {
   white-space: nowrap;
   flex: 0 0 auto;
 }
+  /* 공식 로고 클릭 시 WolLu 메인으로 이동 */
+  .brand-logo-link {
+    display: inline-flex;
+    align-items: center;
+    flex: none;
+    border-radius: 6px;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .brand-logo-link:focus-visible {
+    outline: 2px solid #e6c68a;
+    outline-offset: 4px;
+  }
   </style>
  </head>
  <body>
   <main>
    <header>
     <div class="wollu-game-brand">
-     <img alt="WolLu — ONLINE BOARD GAME LOUNGE" src="../wollu-logo.svg"/>
+     <a class="brand-logo-link" href="../" aria-label="WolLu 메인으로 이동">
+      <img alt="WolLu — ONLINE BOARD GAME LOUNGE" src="../wollu-logo.svg"/>
+     </a>
      <div>
       <div class="brand-game-name">
        BREAKER
@@ -940,7 +956,9 @@ footer .tools #ranking {
        ONLINE BOARD GAME LOUNGE
       </div>
       <div class="rank-brand">
-       <img alt="WolLu 공식 로고" src="../wollu-logo.svg"/>
+       <a class="brand-logo-link" href="../" aria-label="WolLu 메인으로 이동">
+        <img alt="WolLu 공식 로고" src="../wollu-logo.svg"/>
+       </a>
        <div class="rank-brand-title" id="rankTitle">
         BREAKER 랭킹
        </div>
@@ -1556,8 +1574,17 @@ $('ranking').onclick = () => { if (phase !== 'flight')
     showRecords(); };
 $('recordClose').onclick = () => { $('recordModal').hidden = true; renderUI(); };
 $('again').onclick = reset;
-$('homeLink').addEventListener('click', e => { if (phase !== 'over' && (turn > 1 || total() > 0) && !confirm('진행 중인 게임을 나가고 메인으로 돌아갈까요?'))
-    e.preventDefault(); });
+// 헤더의 메인 버튼과 두 곳의 공식 로고에 동일한 이동 확인 적용
+function confirmReturnHome(event) {
+    if (phase !== 'over' && (turn > 1 || total() > 0) &&
+        !confirm('진행 중인 게임을 나가고 메인으로 돌아갈까요?')) {
+        event.preventDefault();
+    }
+}
+$('homeLink').addEventListener('click', confirmReturnHome);
+document.querySelectorAll('.brand-logo-link').forEach(link => {
+    link.addEventListener('click', confirmReturnHome);
+});
 $('reset').onclick = () => { if (phase === 'over' || (!total() && turn === 1) || confirm('현재 게임을 종료하고 다시 시작할까요?'))
     reset(); };
 document.addEventListener('keydown', e => { if (e.key === 'Escape') {
