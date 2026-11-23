@@ -21,6 +21,14 @@
   padding-block: calc(12px * var(--ui-scale));
 }
 
+/* 헤더는 페이지 흐름에 따라 스크롤: 고정/스티키 비활성화 */
+.siteHeader {
+  position: static !important;
+  top: auto !important;
+  inset: auto !important;
+  transform: none !important;
+}
+
 /* 로고 + 게임명 */
 .siteHeader .wollu-game-brand {
   display: flex;
