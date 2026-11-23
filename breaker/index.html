@@ -724,7 +724,30 @@ footer .tools #ranking {
     outline: 2px solid #e6c68a;
     outline-offset: 4px;
   }
-  </style>
+  
+/* 오목 대기실 방식의 닉네임 입력란 */
+.player-nickname-panel label {
+  display: block;
+  margin-bottom: 8px;
+  color: #b7d7bd;
+  font-size: 12px;
+  font-weight: 650;
+}
+.player-nickname-panel input {
+  width: 100%;
+  border: 1px solid #496b59;
+  border-radius: 8px;
+  background: #10221a;
+  padding: 11px 12px;
+  color: #eff2e9;
+  font: inherit;
+}
+.player-nickname-panel input:focus-visible {
+  outline: 2px solid #d6b477;
+  outline-offset: 2px;
+}
+.player-nickname-panel .nickname-help { margin: 7px 0 0; }
+</style>
  </head>
  <body>
   <main>
@@ -838,7 +861,12 @@ footer .tools #ranking {
       <div class="recent" id="recent">
       </div>
      </section>
-     <section class="panel">
+     <section class="panel player-nickname-panel" aria-label="플레이어 닉네임">
+  <label for="onlineName">내 닉네임</label>
+  <input id="onlineName" type="text" maxlength="16" autocomplete="nickname" placeholder="익명 플레이어" />
+  <p class="note nickname-help" id="nicknameStatus" aria-live="polite">온라인 랭킹에 표시되는 이름 · 변경 시 자동 저장</p>
+</section>
+<section class="panel">
       <div class="row">
        <h2>
         보유 공 현황
@@ -1039,15 +1067,7 @@ footer .tools #ranking {
     <p aria-live="polite" class="rank-message" id="onlineMessage">
     </p>
     <div class="rank-bottom">
-     <div class="rank-name">
-      <label for="onlineName">
-       내 닉네임
-      </label>
-      <input autocomplete="off" id="onlineName" maxlength="16" placeholder="익명 플레이어"/>
-      <button id="onlineSaveName">
-       저장
-      </button>
-     </div>
+     
      <div class="rank-actions">
       <button id="onlineRefresh">
        ⟳ 새로고침

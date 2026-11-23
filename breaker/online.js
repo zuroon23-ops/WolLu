@@ -5,7 +5,7 @@ const PATH = 'breakerLeaderboardV07';
 const nodes = {
   status: $('onlineStatus'), message: $('onlineMessage'), modal: $('onlineModal'),
   rows: $('onlineRows'), score: $('myBestScore'), wave: $('myBestWave'),
-  rank: $('myBestRank'), nickname: $('onlineName')
+  rank: $('myBestRank'), nickname: $('onlineName'), nicknameStatus: $('nicknameStatus')
 };
 let db, uid, sdk, initialization;
 let latestSession = 0;
@@ -31,6 +31,13 @@ async function initialize() {
   uid = auth.currentUser.uid;
   db = dbSdk.getDatabase(app);
   sdk = dbSdk;
+  // 이 기기에서 닉네임을 설정하지 않았다면 기존 온라인 기록의 이름을 불러옵니다.
+  try {
+    if (!localStorage.getItem('wolluBreakerNickname')) {
+      const existing = (await sdk.get(sdk.ref(db, PATH + '/' + uid))).val();
+      if (existing?.nickname && !nodes.nickname.value.trim()) nodes.nickname.value = existing.nickname;
+    }
+  } catch (e) { console.warn('[WolLu BREAKER] nickname load:', e); }
   state('온라인 랭킹 연결됨');
 }
 initialization = initialize().catch(err => {
@@ -126,10 +133,42 @@ $('onlineRanking').onclick = show;
 $('onlineRefresh').onclick = loadRanking;
 $('onlineClose').onclick = close;
 $('onlineBack').onclick = close;
-$('onlineSaveName').onclick = () => {
-  nodes.nickname.value=nickname();
-  try { localStorage.setItem('wolluBreakerNickname',nickname()); } catch {}
-  note('닉네임 저장 완료 · 다음 최고 기록 갱신부터 반영됩니다.');
-};
+// 오목처럼 게임 화면에서 바로 닉네임을 변경합니다.
+// 기록이 아직 없다면 로컬에만 저장하고 첫 게임 종료 때 등록합니다.
+// 이미 기록이 있다면 같은 UID의 nickname 필드만 갱신합니다.
+let nicknameVersion = 0;
+async function saveNickname() {
+  const version = ++nicknameVersion;
+  const name = nickname();
+  nodes.nickname.value = name;
+  try { localStorage.setItem('wolluBreakerNickname', name); } catch {}
+  nodes.nicknameStatus.textContent = '닉네임 저장 중…';
+  try {
+    await initialization;
+    // 순서가 역전되어 오래된 이름으로 덮어쓰는 것을 방지합니다.
+    if (version !== nicknameVersion) return;
+    const recordRef = sdk.ref(db, PATH + '/' + uid);
+    const record = (await sdk.get(recordRef)).val();
+    if (version !== nicknameVersion) return;
+    if (record) {
+      await sdk.update(recordRef, {nickname: name});
+      nodes.nicknameStatus.textContent = '닉네임 저장됨 · 온라인 랭킹 반영 완료';
+    } else {
+      nodes.nicknameStatus.textContent = '닉네임 저장됨 · 첫 기록 등록 시 랭킹 반영';
+    }
+  } catch(err) {
+    nodes.nicknameStatus.textContent = '기기에 저장됨 · 온라인 반영 실패';
+    console.warn('[WolLu BREAKER] nickname update:', err);
+  }
+}
+// 입력하는 동안에는 로컬에 즉시 저장, 입력 완료 시 Firebase에 동기화.
+nodes.nickname.addEventListener('input', () => {
+  try { localStorage.setItem('wolluBreakerNickname', nickname()); } catch {}
+  nodes.nicknameStatus.textContent = '입력 완료 시 자동 저장';
+});
+nodes.nickname.addEventListener('change', saveNickname);
+nodes.nickname.addEventListener('keydown', e => {
+  if (e.key === 'Enter') nodes.nickname.blur();
+});
 window.BreakerOnline={start,submit};
 start();
