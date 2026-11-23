@@ -167,6 +167,35 @@
       margin-top: calc(40px * var(--ui-scale));
     }
 
+    /* ===== 벽돌깨기 미리보기 ===== */
+    .breakerPreview {
+      position: relative;
+      background: #142c25;
+      background-image: none;
+      overflow: hidden;
+    }
+    .breakerPreview .brick {
+      display: grid;
+      place-items: center;
+      width: 23%;
+      height: 38%;
+      background: #527b65;
+      border: 2px solid #83b599;
+      border-radius: 8px;
+      font-weight: 750;
+      color: #f6e9c7;
+    }
+    .breakerPreview .brick:nth-child(2) { background: #a37d4a; border-color: #d5b478; }
+    .breakerPreview .brick:nth-child(3) { background: #735c8d; border-color: #ac8bcd; }
+    .breakerPreview .breakerBall {
+      position: absolute;
+      left: 44%;
+      bottom: 9%;
+      color: #ffbd68;
+      font-size: 34px;
+      text-shadow: 0 0 12px #ffb54b;
+    }
+
     /* ===== 키보드 접근성 ===== */
 
     a:focus-visible {
@@ -213,12 +242,19 @@
         <span class="tag">게임 입장 →</span>
       </a>
 
-      <!-- 추후 추가 게임 -->
-      <section class="card future">
-        <h3>새로운 게임</h3>
-        <p>추후 추가 예정입니다.</p>
-        <span class="tag">COMING SOON</span>
-      </section>
+      <!-- 벽돌깨기 -->
+      <a class="card" href="breaker/">
+        <div class="board breakerPreview" aria-hidden="true">
+          <span class="brick">18</span>
+          <span class="brick">24</span>
+          <span class="brick">35</span>
+          <span class="breakerBall">✹</span>
+        </div>
+        <h3>벽돌깨기</h3>
+        <p>공을 뽑고 합성해 끝없이 도전하세요.</p>
+        <p class="tag">싱글플레이 · 온라인 랭킹</p>
+        <span class="tag">게임 입장 →</span>
+      </a>
 
     </div>
 
